@@ -1,0 +1,7 @@
+<suite name="Health Check" verbose="1" >
+    <test name="Include Me" >
+        <classes>
+            <class name="healthcheck.IncludeMe" />
+        </classes>
+    </test>
+</suite>
