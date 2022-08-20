@@ -1,0 +1,1 @@
+{"uuid":"77448c03-ce02-4464-9b8a-05705ab4020f","name":"ui.rozetka.RozetkaUiTests","children":["f7739fca-8d8b-43ee-8c7b-ef8b8d638960"],"befores":[{"name":"startTest","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1661000640671,"stop":1661000644875}],"afters":[],"start":1661000640620,"stop":1661000649762}
