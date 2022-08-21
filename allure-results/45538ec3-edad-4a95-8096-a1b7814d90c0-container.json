@@ -1,0 +1,1 @@
+{"uuid":"45538ec3-edad-4a95-8096-a1b7814d90c0","name":"ui.rozetka.LoginForm","children":["f29f94d9-19c6-494d-a588-44c819ec7cbe"],"befores":[{"name":"start","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1661068095804,"stop":1661068100393}],"afters":[],"start":1661068095756,"stop":1661068101289}
