@@ -1,0 +1,7 @@
+<suite name="iTunes" verbose="1" >
+    <test name="iTunes API tests" >
+        <classes>
+            <class name="api.itunes.ItunesApiSearch" />
+        </classes>
+    </test>
+</suite>

@@ -1,13 +1,11 @@
 package dto;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Builder
-public class ItunesDto {
+public class ArtistDto {
 
     private String artistName;
     private long artistId;
