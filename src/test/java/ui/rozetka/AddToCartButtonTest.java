@@ -34,8 +34,7 @@ public class AddToCartButtonTest {
     }
 
     @Test
-    @Description("* Search for a product \n * Verify that the search result matches the search keyword \n * Open the PDP " +
-            "\n * Verify that the 'Add to cart' button is active")
+    @Description("* Search for a product \n * Verify that the search result matches the search keyword \n * Open the PDP " + "\n * Verify that the 'Add to cart' button is active")
     public void addToCartButtonIsActive() {
         SelenideElement searchField = $(By.xpath("//input[@name='search']"));
         SelenideElement searchButton = $(By.xpath("//button[contains(@class, 'search-form__submit')]"));
@@ -49,6 +48,8 @@ public class AddToCartButtonTest {
 
         $(By.xpath("//*[contains(@class, 'catalog-grid__cell')][1]")).shouldBe(visible).click();
 
-        Assert.assertTrue($(By.xpath("//button[contains(@class, 'buy-button')]")).shouldBe(visible).isDisplayed());
+        Assert.assertTrue($(By.xpath("//button[contains(@class, 'buy-button')]"))
+                .shouldBe(visible)
+                .isDisplayed());
     }
 }
