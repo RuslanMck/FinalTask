@@ -28,3 +28,4 @@ target/
 test-results
 test-output
 build/
+allure-results

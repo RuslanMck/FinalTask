@@ -28,13 +28,14 @@ public class AddToCartButtonTest {
 
     @BeforeClass
     private void startTest() {
-        Configuration.holdBrowserOpen = true;
+//        Configuration.holdBrowserOpen = true;
         Configuration.browserSize = "1920x1080";
         Selenide.open("https://rozetka.com.ua/");
     }
 
     @Test
-    @Description("* Search for a product \n * Verify that the search result matches the search keyword \n * Open the PDP " + "\n * Verify that the 'Add to cart' button is active")
+    @Description("* Search for a product \n * Verify that the search result matches the search keyword \n" +
+            " * Open the PDP \n * Verify that the 'Add to cart' button is active")
     public void addToCartButtonIsActive() {
         SelenideElement searchField = $(By.xpath("//input[@name='search']"));
         SelenideElement searchButton = $(By.xpath("//button[contains(@class, 'search-form__submit')]"));
