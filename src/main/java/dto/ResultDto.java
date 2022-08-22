@@ -13,4 +13,7 @@ import lombok.extern.jackson.Jacksonized;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ResultDto {
     private long artistId;
+    private String wrapperType;
+    private String trackName;
+    private String country;
 }

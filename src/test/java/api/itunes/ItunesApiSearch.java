@@ -1,7 +1,7 @@
 package api.itunes;
 
-import dto.ArtistDto;
 import dto.SearchResultDto;
+import io.qameta.allure.Description;
 import io.qameta.allure.internal.shadowed.jackson.databind.DeserializationFeature;
 import io.qameta.allure.internal.shadowed.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
@@ -20,18 +20,54 @@ public class ItunesApiSearch {
 
     public static final String BASE_URL = "https://itunes.apple.com";
     private RequestSpecification requestSpecification;
-    private String artistId;
-    HashMap<String, String> params = new HashMap<String, String>(){{put("term","hrvrd");}};
+    private long artistId;
 
-    private void printResponseBody(){
+    private JsonPath responsePath;
+
+    private void printResponseBody(HashMap<String, String> paramsMap){
         ResponseBody body = RestAssured.given()
                 .spec(requestSpecification)
-                .queryParams(params)
+                .queryParams(paramsMap)
                 .when()
                 .get("/search")
                 .getBody();
 
         System.out.println("Response Body " + body.asString());
+    }
+
+    private int checkExpectedWrapperTypeQty(SearchResultDto responseList, String expectedStatement){
+        int result = 0;
+        for(int i = 0; i < responseList.getResultCount(); i++){
+            if (responseList.getResults().get(i).getWrapperType().equals(expectedStatement)){
+//                System.out.println("#" + i + " = " +responseList.getResults().get(i).getWrapperType());
+                result++;
+            } else {
+//                System.out.println("WRAPPER TYPE IS: " + responseList.getResults().get(i).getWrapperType());
+            }
+        }
+        return result;
+    }
+
+    private int checkExpectedWCountryQty(SearchResultDto responseList, String expectedStatement){
+        int result = 0;
+        for(int i = 0; i < responseList.getResultCount(); i++){
+            if (responseList.getResults().get(i).getCountry().equals(expectedStatement)){
+//                System.out.println("#" + i + " = " +responseList.getResults().get(i).getCountry());
+                result++;
+            } else {
+//                System.out.println("COUNTRY IS: " + responseList.getResults().get(i).getCountry());
+            }
+        }
+        return result;
+    }
+
+    @SneakyThrows
+    private SearchResultDto responsePathToSearchResultDto(JsonPath responsePath){
+        SearchResultDto responseList = new ObjectMapper()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .readValue(responsePath.prettify(), SearchResultDto.class);
+
+        return responseList;
     }
 
     @BeforeClass
@@ -42,12 +78,15 @@ public class ItunesApiSearch {
     }
 
     @Test
+    @Description("* Search by artist name \n * Get the artist ID from the response \n " +
+            "* Compare ID from the response with actual artist ID")
     @SneakyThrows
-    public void searchArtist(){
+    public void searchArtistId(){
 
-        JsonPath responsePath = RestAssured.given()
+
+        responsePath = RestAssured.given()
                 .spec(requestSpecification)
-                .queryParam("term","hrvrd")
+                .queryParams("term","hrvrd")
                 .when()
                 .get("/search")
                 .then()
@@ -56,15 +95,94 @@ public class ItunesApiSearch {
                 .body()
                 .jsonPath();
 
-        SearchResultDto responseList = new ObjectMapper()
-                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                .readValue(responsePath.prettify(), SearchResultDto.class);
+        SearchResultDto responseList = responsePathToSearchResultDto(responsePath);
 
-        System.out.println("Result Count " + responseList.getResultCount());
+//        System.out.println("Result Count: " + responseList.getResultCount());
 
-        System.out.println("Artist Id " + responseList.getResults().get(0).getArtistId());
+        artistId = responseList.getResults().get(0).getArtistId();
 
-        Assert.assertEquals(responseList.getResults().get(0).getArtistId(), 514625472);
+//        System.out.println("Artist Id: " + artistId);
 
+        Assert.assertEquals(artistId, 514625472);
+    }
+
+    @Test
+    @Description("* Search for songs of artist with limited results number \n " +
+            "* Check the number fo the results with correct WrapperType (song) \n " +
+            "* Compare the search limit number and correct WrapperType results number")
+    @SneakyThrows
+    public void searchWithLimit(){
+        int searchLimit = 18;
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("id","514625472");
+        params.put("entity","song");
+        params.put("limit", String.valueOf(searchLimit));
+
+        responsePath = RestAssured.given()
+                .spec(requestSpecification)
+                .queryParams(params)
+                .when()
+                .get("/lookup")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .jsonPath();
+
+        SearchResultDto responseList = responsePathToSearchResultDto(responsePath);
+
+        Assert.assertEquals( checkExpectedWrapperTypeQty(responseList,"track"),searchLimit);
+    }
+
+    @Test
+    @Description("* Search with specific country code with limited results number \n " +
+            "* Check the number fo the results with correct country code \n " +
+            "* Compare the search limit number and correct country code results number")
+    @SneakyThrows
+    public void checkCountry(){
+
+        int searchLimit = 56;
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("term","Shakespeare");
+        params.put("limit", String.valueOf(searchLimit));
+        params.put("country","GB");
+
+        responsePath = RestAssured.given()
+                .spec(requestSpecification)
+                .queryParams(params)
+                .when()
+                .get("/search")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .jsonPath();
+
+        SearchResultDto responseList = responsePathToSearchResultDto(responsePath);
+
+        Assert.assertEquals(checkExpectedWCountryQty(responseList,"GBR"),searchLimit);
+    }
+
+    @Test
+    @Description("* Search with invalid country code \n " +
+            "* Check that the API call returns code 400")
+    @SneakyThrows
+    public void countryCodeValidation(){
+        String countryCode = "QWE";
+
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("term","Metallica");
+        params.put("country",countryCode);
+
+        Assert.assertEquals(RestAssured.given()
+                .spec(requestSpecification)
+                .queryParams(params)
+                .when()
+                .get("/search")
+                .then()
+                .statusCode(400)
+                .extract()
+                .statusCode(), 400);
     }
 }

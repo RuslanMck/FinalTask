@@ -28,7 +28,7 @@ public class AddToCartButtonTest {
 
     @BeforeClass
     private void startTest() {
-        Configuration.holdBrowserOpen = true;
+//        Configuration.holdBrowserOpen = true;
         Configuration.browserSize = "1920x1080";
         Selenide.open("https://rozetka.com.ua/");
     }

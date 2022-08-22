@@ -18,7 +18,7 @@ public class LoginForm {
     private void start() {
         Selenide.open("https://rozetka.com.ua/");
         Configuration.browserSize = "1920x1080";
-        Configuration.holdBrowserOpen = true;
+//        Configuration.holdBrowserOpen = true;
     }
 
     @Test
