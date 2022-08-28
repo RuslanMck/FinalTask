@@ -14,6 +14,16 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class AddToCartButtonTest {
 
+    private static final By SEARCH_FIELD = By.xpath("//input[@name='search']");
+    private SelenideElement getSearchField(){
+        return $(SEARCH_FIELD);
+    }
+
+    private static final By SEARCH_BUTTON = By.xpath("//button[contains(@class, 'search-form__submit')]");
+    private SelenideElement getSearchButton(){
+        return $(SEARCH_BUTTON);
+    }
+
     private int checkResultsTile(String keyWord, ElementsCollection searchResults) {
         int i = 0;
         for (SelenideElement result : searchResults) {
@@ -37,15 +47,16 @@ public class AddToCartButtonTest {
     @Description("* Search for a product \n * Verify that the search result matches the search keyword \n" +
             " * Open the PDP \n * Verify that the 'Add to cart' button is active")
     public void addToCartButtonIsActive() {
-        SelenideElement searchField = $(By.xpath("//input[@name='search']"));
-        SelenideElement searchButton = $(By.xpath("//button[contains(@class, 'search-form__submit')]"));
-        searchField.shouldBe(visible).setValue("GORENJE WP");
-        searchButton.shouldBe(visible).click();
+//        SelenideElement searchField = $(By.xpath("//input[@name='search']"));
+//        SelenideElement searchButton = $(By.xpath("//button[contains(@class, 'search-form__submit')]"));
+        getSearchField().shouldBe(visible).setValue("GORENJE WP");
+        getSearchButton().shouldBe(visible).click();
 
-        ElementsCollection searchResults = $$(By.xpath("//span[contains(translate(., 'GORENJE', 'Gorenje'),'Gorenje')]"));
+        ElementsCollection searchResults = $$(By.
+                xpath("//span[contains(translate(., 'GORENJE', 'Gorenje'),'Gorenje')]"));
         searchResults.shouldHave(sizeGreaterThanOrEqual(7));
         int matchingResultsQty = checkResultsTile("GORENJE", searchResults);
-        Assert.assertEquals(matchingResultsQty, 18);
+        Assert.assertEquals(matchingResultsQty, 20);
 
         $(By.xpath("//*[contains(@class, 'catalog-grid__cell')][1]")).shouldBe(visible).click();
 
