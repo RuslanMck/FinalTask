@@ -15,7 +15,7 @@
         <testng.version>7.6.1</testng.version>
         <selenide.version>6.7.2</selenide.version>
         <aspectj.version>1.8.10</aspectj.version>
-        <allure.version>2.19.0</allure.version>
+        <allure.version>2.18.1</allure.version>
         <rest-assured.version>5.1.1</rest-assured.version>
         <hamcrest.version>2.2</hamcrest.version>
         <jackson.version>2.13.3</jackson.version>
@@ -39,6 +39,8 @@
                 <configuration>
                     <suiteXmlFiles>
                         <suiteXmlFile>suites/healthcheck.xml</suiteXmlFile>
+                        <suiteXmlFile>suites/itunes-api.xml</suiteXmlFile>
+                        <suiteXmlFile>suites/rozetka.xml</suiteXmlFile>
                     </suiteXmlFiles>
 
                     <argLine>
@@ -81,8 +83,9 @@
 
         <dependency>
             <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-selenide</artifactId>
+            <artifactId>allure-testng</artifactId>
             <version>${allure.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -102,7 +105,15 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
+            <version>2.13.3</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

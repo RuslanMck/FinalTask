@@ -1,0 +1,8 @@
+<suite name="Rozetka" verbose="1" >
+    <test name="Rozetka UI tests" >
+        <classes>
+            <class name="ui.rozetka.AddToCartButtonTest" />
+            <class name="ui.rozetka.LoginForm" />
+        </classes>
+    </test>
+</suite>
